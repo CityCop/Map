@@ -15,7 +15,7 @@ Without any changes, this app is connected to `raw-data` endpoint and is using a
 Clone the repo and install the dependencies.
 
 ```bash
-git clone ....
+git clone https://github.com/CityCop/Map
 cd crimeometer-visualizations
 ```
 
