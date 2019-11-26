@@ -7,11 +7,12 @@ import { grey } from '@material-ui/core/colors';
 
 
 const cities = [
-  {name: 'San Francisco', latitude: '37.7575756', longitude: '-122.5076424', radius: '10'},
-  {name: 'Chicago', latitude: '41.8334705', longitude: '-87.7320425', radius: '10'},
-  {name: 'Austin', latitude: '30.3074624', longitude: '-97.8935154', radius: '10'},
-  {name: 'Los Angeles', latitude: '34.0201613', longitude: '-118.6919206', radius: '10'}
-];
+  {name: 'San Francisco', latitude: '37.7575756', longitude: '-122.5076424', radius: '20'},
+  {name: 'Chicago', latitude: '41.8334705', longitude: '-87.7320425', radius: '20'},
+  {name: 'Austin', latitude: '30.272593', longitude: '-97.719811', radius: '15'},
+  {name: 'Los Angeles', latitude: '34.038720', longitude: '-118.248119', radius: '40'},
+  {name: 'New York', latitude: '40.722482', longitude: '-73.976784', radius: '20'}
+]; 
 
 class ParamBox extends React.Component {
   constructor(props) {
@@ -100,7 +101,7 @@ class ParamBox extends React.Component {
         }}>
             {cities.map(item =>  <option key={item.name} value={item.name}>{item.name}</option>)}
           </Select>}
-          <div style={rowStyle2} >
+          {/* <div style={rowStyle2} >
             <Typography variant="subtitle2">
               Latitude
             </Typography>
@@ -114,8 +115,8 @@ class ParamBox extends React.Component {
                 type: 'number',
               }}
             />
-          </div>
-          <div style={rowStyle2} >
+          </div> */}
+          {/* <div style={rowStyle2} >
             <Typography variant="subtitle2">
               Longitude
             </Typography>
@@ -129,7 +130,7 @@ class ParamBox extends React.Component {
                 type: 'number',
               }}
             />
-          </div>
+          </div> */}
           <MuiPickersUtilsProvider style={{ position: 'absolute', bottom: 0 }} utils={MomentUtils}>
             <KeyboardDatePicker
               style={{ marginTop: 15, marginBottom: 15 }}
