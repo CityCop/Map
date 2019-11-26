@@ -1,8 +1,7 @@
 
 ## Example of visualizations of incidents using Crimeometer API 
 
-For this project we use Deck.gl library
-<a href="https://deck.gl/" target="_blank"></a>
+For this project we use [https://deck.gl/](Deck.gl) library
 
 ## Requirements
 
