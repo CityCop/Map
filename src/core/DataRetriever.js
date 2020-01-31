@@ -17,8 +17,7 @@ const ObtainData = async (page, startDate, endDate, miles, lat, lon) => {
 				distance: `${miles}mi`,
 				datetime_ini: startDate+'T00:00:00.000Z',
 				datetime_end: endDate+'T00:00:00.000Z',
-				page,
-				page_size:5000,
+				page_size:9000,
 		}
 		})
 		//console.log(res)

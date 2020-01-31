@@ -1,12 +1,9 @@
 import React from 'react';
-import {Texture2D} from '@luma.gl/core'
-import {StaticMap, CanvasOverlay,FlyToInterpolator} from 'react-map-gl';
+import {StaticMap, FlyToInterpolator} from 'react-map-gl';
 import {PhongMaterial} from '@luma.gl/core';
 import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
-import {HexagonLayer} from '@deck.gl/aggregation-layers';
-import {ColumnLayer, IconLayer} from '@deck.gl/layers';
+import {HexagonLayer, HeatmapLayer} from '@deck.gl/aggregation-layers';
 import DeckGL from '@deck.gl/react';
-import {instrumentGLContext} from '@luma.gl/webgl';
 import { ObtainData } from './core/DataRetriever'
 import ParamBox from './components/ParamBox2';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWRvdHRpIiwiYSI6InJhVDA4ckUifQ.tNOPsPbZBO-YL5vRAWPgYg'; // eslint-disable-line
@@ -59,18 +56,19 @@ class MapLayout extends React.Component {
     super(props);
     this.state = {
       hoveredObject: null,
+      mode: 'heatmap',
       elevationScale: elevationScale.min,
       break: false,
-      miles: 10,
-      lat: 37.7575756,
-      long: -122.5076424,
+      miles: 20,
+      lat: 37.787933,
+      long: -122.4096868,
       startDate: new Date(new Date() - 30*86400000),
       endDate: new Date(),
       incidents: 0,
       name: "San Francisco",
       viewState: {
-        latitude: 37.7575756,
-        longitude: -122.5076424,
+        latitude: 37.787933,
+        longitude: -122.4096868,
         zoom: 11,
         minZoom: 5,
         maxZoom: 15,
@@ -146,9 +144,50 @@ class MapLayout extends React.Component {
     const ICON_MAPPING = {
       marker: {x: 0, y: 0, width: 1000, height: 1000, mask: true}
     };
-    const {radius = 100, upperPercentile = 100, coverage = 1} = this.props;
-    const {data} = this.state
+    const {radius = 50, upperPercentile = 100, coverage = 1} = this.props;
+    const {data, mode} = this.state
+    let layer;
+    if (mode === 'heatmap'){
+      layer = new HeatmapLayer({
+        id: 'heatmapLayer',
+        colorRange,
+        coverage : 100,
+        data,
+        elevationRange: [0, 1],
+        elevationScale: this.state.elevationScale,
+        extruded: true,
+        getPosition: d => [d.longitude, d.latitude],
+        opacity: 0.5,
+        threshold: 0.2,
+        radius: 10000,
+        upperPercentile,
+        material,
+        intensity: 3,
+        pickable: true,
+        onHover: this._onHover
+      });
+    }else {
+      layer = new HexagonLayer({
+        id: 'hexagon-map',
+        colorRange,
+        coverage,
+        data,
+        elevationRange: [0, 1],
+        elevationScale: this.state.elevationScale,
+        extruded: true,
+        getPosition: d => [d.longitude, d.latitude],
+        opacity: 0.5,
+        radius,
+        upperPercentile,
+        material,
+        pickable: true,
+        onHover: this._onHover
+      })
+    
+    }
     return [
+      layer
+    ];
       /*
       new ColumnLayer({
         id: 'column-layer',
@@ -179,23 +218,6 @@ class MapLayout extends React.Component {
         }
         
       }),*/
-      new HexagonLayer({
-        id: 'heatmap',
-        colorRange,
-        coverage,
-        data,
-        elevationRange: [0, 3000],
-        elevationScale: this.state.elevationScale,
-        extruded: true,
-        getPosition: d => [d.longitude, d.latitude],
-        opacity: 1,
-        radius,
-        upperPercentile,
-        material,
-        pickable: true,
-        onHover: this._onHover
-      })
-    ];
  
   }
 
@@ -270,9 +292,10 @@ class MapLayout extends React.Component {
     }
   }
 
-  submitParams = async (startDate, endDate, miles, lat, long) => {
+  submitParams = async (startDate, endDate, miles, lat, long, mode) => {
     console.log(startDate)
     console.log(endDate)
+    mode = !mode ? 'heatmap' :'hexagon-map';
     await this.setState({
       break: true,
       startDate,
@@ -280,6 +303,7 @@ class MapLayout extends React.Component {
       miles,
       lat,
       long, 
+      mode,
       viewState: {
         ...this.state.viewState,
         latitude: Number(lat),
