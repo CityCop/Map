@@ -3,6 +3,8 @@
 
 For this project we use [https://deck.gl](Deck.gl) library
 
+For this project we use [deck.gl](Deck.gl) library
+
 ## Requirements
 
 * Node 10.8.0
